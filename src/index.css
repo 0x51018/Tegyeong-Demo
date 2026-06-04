@@ -20,10 +20,23 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+html {
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: #16120f;
 }
 
@@ -47,7 +60,9 @@ a {
 }
 
 .page-background {
-  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overscroll-behavior: none;
   background:
     radial-gradient(circle at 50% 0%, rgba(227, 98, 50, 0.12), transparent 28rem),
     #16120f;
@@ -56,15 +71,16 @@ a {
 .app-frame {
   position: relative;
   width: min(100%, 430px);
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0 auto;
   overflow: hidden;
+  overscroll-behavior: none;
   background: var(--bg);
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.4);
 }
 
 .app-content {
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: env(safe-area-inset-top) 0 calc(90px + env(safe-area-inset-bottom));
 }
 
