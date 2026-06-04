@@ -10,7 +10,13 @@ import {
 import { Fragment, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { VinylCard } from "../components/VinylCard";
-import { formatWon, getAlbumVersions, getPublicListingPrice, vinyls } from "../data/catalog";
+import {
+  formatWon,
+  getAlbumVersions,
+  getPublicListingPrice,
+  getReferencePrice,
+  vinyls,
+} from "../data/catalog";
 
 const modes = [
   { id: "search", label: "매물 검색", icon: Search },
@@ -57,6 +63,10 @@ export function MarketScreen() {
       .sort((a, b) => a.artist.localeCompare(b.artist, "ko") || a.title.localeCompare(b.title, "ko")),
     [],
   );
+  const diggingVinyls = useMemo(
+    () => [...vinyls].sort((a, b) => a.artist.localeCompare(b.artist, "ko") || a.title.localeCompare(b.title, "ko")),
+    [],
+  );
   const marketSearchVinyls = useMemo(
     () => inventoryVinyls.filter((vinyl, index) =>
       inventoryVinyls.findIndex((candidate) =>
@@ -79,12 +89,12 @@ export function MarketScreen() {
         .includes(normalizedQuery),
     )
     : marketSearchVinyls;
-  const visibleDiggingVinyls = inventoryVinyls.filter((vinyl) => matchesDiggingFilter(vinyl.artist, diggingFilter));
-  const diggingVinyl =
-    visibleDiggingVinyls.find((vinyl) => vinyl.id === selectedDiggingId) ??
-    visibleDiggingVinyls[0] ??
-    inventoryVinyls[0]!;
-  const diggingListing = diggingVinyl.usedListings.find((listing) => listing.sourceUrl) ?? diggingVinyl.usedListings[0];
+  const visibleDiggingVinyls = diggingVinyls.filter((vinyl) => matchesDiggingFilter(vinyl.artist, diggingFilter));
+  const diggingVinyl = visibleDiggingVinyls.find((vinyl) => vinyl.id === selectedDiggingId);
+  const diggingListing =
+    diggingVinyl?.usedListings.find((listing) => listing.sourceUrl) ??
+    diggingVinyl?.usedListings[0];
+  const diggingPrice = diggingListing?.price ?? (diggingVinyl ? getReferencePrice(diggingVinyl).price : null);
 
   const changeMode = (mode: MarketMode) => {
     setActiveMode(mode);
@@ -138,7 +148,10 @@ export function MarketScreen() {
 
       {activeMode === "digging" ? (
         <div className="market-panel digging-panel">
-          <div className="digging-counter"><span>공개 매물 기반 레코드 빈에서 한 장씩 꺼내보세요</span><strong>{visibleDiggingVinyls.length}장</strong></div>
+          <div className="digging-counter">
+            <span>좌우로 넘기고, 궁금한 LP 한 장을 꺼내보세요</span>
+            <strong>{visibleDiggingVinyls.length}장</strong>
+          </div>
           <div className="crate-filters" aria-label="아티스트 이름순 필터">
             {diggingFilters.map((filter) => (
               <button
@@ -159,15 +172,16 @@ export function MarketScreen() {
               {visibleDiggingVinyls.map((vinyl, index) => {
                 const initial = getArtistInitial(vinyl.artist);
                 const previousInitial = index > 0 ? getArtistInitial(visibleDiggingVinyls[index - 1].artist) : undefined;
-                const active = diggingVinyl.id === vinyl.id;
+                const active = diggingVinyl?.id === vinyl.id;
                 return (
                   <Fragment key={vinyl.id}>
                     {initial !== previousInitial ? <div className="record-divider"><span>{initial}</span></div> : null}
                     <button
                       type="button"
                       className={`record-sleeve${active ? " active" : ""}`}
-                      onClick={() => setSelectedDiggingId(vinyl.id)}
+                      onClick={() => setSelectedDiggingId((current) => current === vinyl.id ? undefined : vinyl.id)}
                       aria-label={`${vinyl.artist} ${vinyl.title} 꺼내보기`}
+                      aria-pressed={active}
                     >
                       <img src={vinyl.cover} alt="" />
                       <span>{vinyl.artist}</span>
@@ -176,34 +190,50 @@ export function MarketScreen() {
                 );
               })}
             </div>
-            <div className="crate-front"><span>VINYL FIND · INSPECTED SECONDHAND</span></div>
+            <div className="crate-front"><span>VINYL FIND · BROWSE THE FULL CATALOG</span></div>
           </div>
-          <div className="digging-record-card">
-            <div className="digging-record-art">
-              <div className="record-disc" />
-              <img src={diggingVinyl.cover} alt={`${diggingVinyl.title} 커버`} />
+          {diggingVinyl ? (
+            <>
+              <div className="digging-record-card">
+                <div className="digging-record-art">
+                  <div className="record-disc" />
+                  <img src={diggingVinyl.cover} alt={`${diggingVinyl.title} 커버`} />
+                </div>
+                <p>{diggingVinyl.artist}</p>
+                <h2>{diggingVinyl.title}</h2>
+                <span>{diggingVinyl.pressing}</span>
+                {diggingListing ? (
+                  <>
+                    <div className="digging-grade">
+                      <div><span>바이닐</span><strong>{diggingListing.grade}</strong></div>
+                      <div><span>자켓</span><strong>{diggingListing.jacketGrade}</strong></div>
+                      <div><span>청음</span><strong>{diggingListing.listeningGrade}</strong></div>
+                    </div>
+                    <p className="digging-note">{diggingListing.note}</p>
+                  </>
+                ) : (
+                  <p className="digging-note">현재 등록된 중고 매물은 없어요. 상세 페이지에서 발매 정보와 판본을 확인해보세요.</p>
+                )}
+                <strong className="digging-price">{formatWon(diggingPrice)}</strong>
+              </div>
+              <div className="digging-actions">
+                {diggingListing?.sourceUrl ? (
+                  <a className="outline-button" href={diggingListing.sourceUrl} target="_blank" rel="noreferrer">
+                    {diggingListing.sourceLabel} 원문
+                  </a>
+                ) : <span className="digging-demo-label">카탈로그 LP</span>}
+                <Link className="primary-button" to={`/vinyl/${diggingVinyl.id}`}>
+                  상세 보기 <ArrowRight size={16} />
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="digging-empty-selection">
+              <Disc3 size={24} strokeWidth={1.5} />
+              <strong>모든 LP는 아직 측면을 보고 있어요</strong>
+              <span>레코드 빈을 좌우로 넘긴 뒤 한 장을 선택하면 정면 커버와 상세 정보가 나타납니다.</span>
             </div>
-            <p>{diggingVinyl.artist}</p>
-            <h2>{diggingVinyl.title}</h2>
-            <span>{diggingVinyl.pressing}</span>
-            <div className="digging-grade">
-              <div><span>바이닐</span><strong>{diggingListing.grade}</strong></div>
-              <div><span>자켓</span><strong>{diggingListing.jacketGrade}</strong></div>
-              <div><span>청음</span><strong>{diggingListing.listeningGrade}</strong></div>
-            </div>
-            <p className="digging-note">{diggingListing.note}</p>
-            <strong className="digging-price">{formatWon(diggingListing.price)}</strong>
-          </div>
-          <div className="digging-actions">
-            {diggingListing.sourceUrl ? (
-              <a className="outline-button" href={diggingListing.sourceUrl} target="_blank" rel="noreferrer">
-                {diggingListing.sourceLabel} 원문
-              </a>
-            ) : <span className="digging-demo-label">VINYL FIND 데모 검수 재고</span>}
-            <Link className="primary-button" to={`/vinyl/${diggingVinyl.id}`}>
-              상세 보기 <ArrowRight size={16} />
-            </Link>
-          </div>
+          )}
         </div>
       ) : null}
 

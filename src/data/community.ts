@@ -1,0 +1,163 @@
+export const communityTags = ["전체", "정보·가이드", "질문", "추천", "자랑", "소식"] as const;
+
+export type CommunityTag = Exclude<(typeof communityTags)[number], "전체">;
+
+export interface CommunityPost {
+  id: string;
+  tag: CommunityTag;
+  title: string;
+  excerpt: string;
+  author: string;
+  postedAt: string;
+  likes: number;
+  comments: number;
+  sourceTitle: string;
+  sourceUrl: string;
+}
+
+export const communityPosts: CommunityPost[] = [
+  {
+    id: "starter-guide",
+    tag: "정보·가이드",
+    title: "처음 LP를 시작할 때 먼저 확인할 것들",
+    excerpt: "턴테이블, 포노앰프, 스피커 연결부터 보관과 세척까지 입문자가 자주 묻는 내용을 한 번에 정리했어요.",
+    author: "groove_guide",
+    postedAt: "방금 전",
+    likes: 128,
+    comments: 18,
+    sourceTitle: "LP갤러리 입문자 정보글 모음",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=84378",
+  },
+  {
+    id: "bluetooth-question",
+    tag: "질문",
+    title: "블루투스 스피커로 들어도 LP의 매력이 남을까요?",
+    excerpt: "첫 턴테이블을 고르는 중인데 유선 연결과 블루투스 연결의 차이가 어느 정도인지 경험을 듣고 싶어요.",
+    author: "first_side_a",
+    postedAt: "12분 전",
+    likes: 9,
+    comments: 24,
+    sourceTitle: "턴테이블 블루투스 연결 관련 질문",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=146491",
+  },
+  {
+    id: "signed-copy",
+    tag: "자랑",
+    title: "기다리던 사인반 수령했습니다",
+    excerpt: "커버 모서리도 깨끗하고 사인 위치도 마음에 들어요. 오늘은 이 판으로 첫 청음을 시작합니다.",
+    author: "needle_drop",
+    postedAt: "35분 전",
+    likes: 76,
+    comments: 15,
+    sourceTitle: "사인반 구매 성공 공유글",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=146475",
+  },
+  {
+    id: "hyukoh-restock",
+    tag: "소식",
+    title: "혁오 AAA 재고를 확인했어요",
+    excerpt: "품절 뒤 다시 열린 판매처를 확인했습니다. 재고는 빠르게 바뀔 수 있으니 구매 전 판매 페이지를 확인하세요.",
+    author: "restock_signal",
+    postedAt: "1시간 전",
+    likes: 54,
+    comments: 21,
+    sourceTitle: "혁오 AAA 재고 공유글",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=146480",
+  },
+  {
+    id: "grading-guide",
+    tag: "정보·가이드",
+    title: "중고 LP 등급표, 사진과 설명을 함께 읽는 법",
+    excerpt: "NM, VG+ 같은 표기만 믿기보다 스크래치, 노이즈, 자켓 모서리와 판매자의 청음 설명을 같이 확인해요.",
+    author: "33rpm",
+    postedAt: "어제",
+    likes: 97,
+    comments: 13,
+    sourceTitle: "중고 LP 그레이딩 정보글",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=84340",
+  },
+  {
+    id: "warped-record",
+    tag: "질문",
+    title: "재생할 때 판이 조금 출렁이는데 괜찮은 상태인가요?",
+    excerpt: "바늘이 튀지는 않지만 회전할 때 높낮이가 보여요. 교환이 필요한 수준인지 판단 기준이 궁금합니다.",
+    author: "flat_or_not",
+    postedAt: "어제",
+    likes: 18,
+    comments: 32,
+    sourceTitle: "LP 휨 상태 관련 질문",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=146481",
+  },
+  {
+    id: "offline-digging",
+    tag: "추천",
+    title: "주말 오프라인 디깅을 더 즐겁게 하는 체크리스트",
+    excerpt: "찾는 음반 목록, 예산, 판 상태 확인 순서를 미리 정해두면 매장에서 훨씬 여유롭게 고를 수 있어요.",
+    author: "crate_walk",
+    postedAt: "2일 전",
+    likes: 84,
+    comments: 11,
+    sourceTitle: "LP 구매와 오프라인 디깅 팁",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=130891",
+  },
+  {
+    id: "today-haul",
+    tag: "자랑",
+    title: "오늘 커뮤니티 덕분에 건진 세 장",
+    excerpt: "재입고 소식과 추천 댓글을 보고 고른 음반들입니다. 서로 다른 장르라 주말 내내 천천히 들어보려고요.",
+    author: "side_b",
+    postedAt: "2일 전",
+    likes: 63,
+    comments: 17,
+    sourceTitle: "오늘 구매한 LP 공유글",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=146460",
+  },
+  {
+    id: "turntable-budget",
+    tag: "추천",
+    title: "예산별 입문 턴테이블을 고를 때 볼 기준",
+    excerpt: "가격보다 자동 재생, 포노앰프 내장, 카트리지 교체 가능 여부처럼 실제 사용에 필요한 조건부터 비교해요.",
+    author: "tonearm_note",
+    postedAt: "3일 전",
+    likes: 112,
+    comments: 28,
+    sourceTitle: "가격대별 입문용 추천 턴테이블",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=82821",
+  },
+  {
+    id: "online-shops",
+    tag: "정보·가이드",
+    title: "국내외 온라인 레코드숍 탐색 노트",
+    excerpt: "신보 예약, 재즈 중고반, 해외 한정반처럼 목적에 따라 둘러보기 좋은 판매처 유형을 정리했습니다.",
+    author: "shop_hopper",
+    postedAt: "4일 전",
+    likes: 91,
+    comments: 9,
+    sourceTitle: "즐겨찾는 온라인 LP샵 리스트",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=36815",
+  },
+  {
+    id: "jazz-buying",
+    tag: "추천",
+    title: "첫 재즈 LP로 부담 없이 듣기 좋은 앨범들",
+    excerpt: "유명한 연주와 비교적 구하기 쉬운 판본을 중심으로 첫 재즈 LP 후보를 골라봤어요.",
+    author: "blue_note_room",
+    postedAt: "5일 전",
+    likes: 72,
+    comments: 20,
+    sourceTitle: "재즈 LP 구매 팁",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=14178",
+  },
+  {
+    id: "cleaning-guide",
+    tag: "정보·가이드",
+    title: "새 판도 재생 전에 가볍게 세척해야 할까요?",
+    excerpt: "먼지 제거와 정전기 관리부터 시작해 판을 손상시키지 않는 기본 세척 순서를 정리했습니다.",
+    author: "clean_groove",
+    postedAt: "1주 전",
+    likes: 105,
+    comments: 16,
+    sourceTitle: "LP 세척 방법 정보글",
+    sourceUrl: "https://gall.dcinside.com/mgallery/board/view/?id=lp&no=70749",
+  },
+];

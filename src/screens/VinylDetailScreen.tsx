@@ -1,10 +1,11 @@
-import { ArrowLeft, ChevronRight, ExternalLink, Heart, Music2, Share2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, ExternalLink, Heart, Music2, PenLine, Share2, Star, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PurchaseSheet } from "../components/PurchaseSheet";
 import { findVinyl, formatWon, getAlbumVersions, getListenLink, getReferencePrice } from "../data/catalog";
+import { getVinylReviews } from "../data/reviews";
 
-const tabs = ["발매 정보", "구매처", "중고 거래", "위키"] as const;
+const tabs = ["발매 정보", "구매처", "중고 거래", "후기·평가", "위키"] as const;
 type DetailTab = (typeof tabs)[number];
 
 export function VinylDetailScreen() {
@@ -27,6 +28,8 @@ export function VinylDetailScreen() {
   const referencePrice = getReferencePrice(vinyl);
   const listenLink = getListenLink(vinyl);
   const albumVersions = getAlbumVersions(vinyl);
+  const reviews = getVinylReviews(vinyl);
+  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
   const sellersByPrice = [...vinyl.sellers].sort(
     (a, b) => (a.price ?? Number.POSITIVE_INFINITY) - (b.price ?? Number.POSITIVE_INFINITY),
   );
@@ -197,6 +200,63 @@ export function VinylDetailScreen() {
               )) : <p className="panel-empty">확인된 국내 공개 시세가 아직 없어요.</p>}
             </div>
             <p className="market-disclaimer">외부 체결가는 주로 미사용 상품 기준이며, 검수 재고 가격은 개봉 여부와 상태 등급을 반영한 데모 값입니다.</p>
+          </div>
+        ) : null}
+
+        {activeTab === "후기·평가" ? (
+          <div className="review-panel">
+            <div className="review-summary">
+              <div>
+                <span>커뮤니티 평점</span>
+                <strong>{averageRating.toFixed(1)}</strong>
+                <div className="review-stars" aria-label={`5점 만점에 ${averageRating.toFixed(1)}점`}>
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <Star key={index} size={15} fill={index < Math.round(averageRating) ? "currentColor" : "none"} />
+                  ))}
+                </div>
+                <small>{reviews.length}개의 데모 후기</small>
+              </div>
+              <div className="rating-bars">
+                {[5, 4, 3, 2, 1].map((rating) => {
+                  const count = reviews.filter((review) => review.rating === rating).length;
+                  return (
+                    <div key={rating}>
+                      <span>{rating}</span>
+                      <i><b style={{ width: `${(count / reviews.length) * 100}%` }} /></i>
+                      <em>{count}</em>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <button type="button" className="write-review-button">
+              <PenLine size={16} />
+              이 판본의 후기 남기기
+            </button>
+            <div className="review-list">
+              {reviews.map((review) => (
+                <article key={review.id}>
+                  <header>
+                    <div>
+                      <strong>{review.author}</strong>
+                      <span>{review.postedAt}</span>
+                    </div>
+                    <div className="review-stars">
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <Star key={index} size={12} fill={index < review.rating ? "currentColor" : "none"} />
+                      ))}
+                    </div>
+                  </header>
+                  <h2>{review.title}</h2>
+                  <p>{review.body}</p>
+                  <dl>
+                    <div><dt>보유 판본</dt><dd>{review.pressing}</dd></div>
+                    <div><dt>청음 환경</dt><dd>{review.setup}</dd></div>
+                  </dl>
+                  <button type="button"><ThumbsUp size={13} /> 도움돼요 {review.helpful}</button>
+                </article>
+              ))}
+            </div>
           </div>
         ) : null}
 
