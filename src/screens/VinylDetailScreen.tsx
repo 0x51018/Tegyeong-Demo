@@ -2,7 +2,7 @@ import { ArrowLeft, ChevronRight, ExternalLink, Heart, Music2, PenLine, Share2, 
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PurchaseSheet } from "../components/PurchaseSheet";
-import { findVinyl, formatWon, getAlbumVersions, getListenLink, getReferencePrice } from "../data/catalog";
+import { findVinyl, formatWon, getAlbumVersions, getListenLink, getOverallGrade, getReferencePrice } from "../data/catalog";
 import { getVinylReviews } from "../data/reviews";
 
 const tabs = ["발매 정보", "구매처", "중고 거래", "후기·평가", "위키"] as const;
@@ -163,43 +163,22 @@ export function VinylDetailScreen() {
         {activeTab === "중고 거래" ? (
           <div className="used-panel">
             <div className="panel-heading">
-              <h2>공개 중고 매물·검수 재고</h2>
-              <span>공개 설명 기반 상태 목업</span>
+              <h2>VINYL FIND 검수 재고</h2>
+              <span>{vinyl.usedListings.length > 0 ? `${vinyl.usedListings.length}장 보유` : "재고 없음"}</span>
             </div>
             <div className="option-list">
               {vinyl.usedListings.length > 0 ? vinyl.usedListings.map((listing) => (
-                listing.sourceUrl ? (
-                  <a href={listing.sourceUrl} target="_blank" rel="noreferrer" key={listing.id} className="option-row">
-                    <div>
-                      <strong>{listing.sourceLabel} · 바이닐 {listing.grade} · 자켓 {listing.jacketGrade}</strong>
-                      <span>{listing.note} · 청음 {listing.listeningGrade}{listing.shipping ? ` · ${listing.shipping}` : ""}</span>
-                    </div>
-                    <b>{formatWon(listing.price)}</b>
-                    <ExternalLink size={17} />
-                  </a>
-                ) : (
-                  <button type="button" key={listing.id} className="option-row">
-                    <div><strong>바이닐 {listing.grade} · 자켓 {listing.jacketGrade}</strong><span>{listing.note} · 청음 {listing.listeningGrade}</span></div>
-                    <b>{formatWon(listing.price)}</b>
-                    <ChevronRight size={18} />
-                  </button>
-                )
-              )) : <p className="panel-empty">검수 완료된 데모 재고가 아직 없어요.</p>}
+                <Link to={`/inventory/${listing.id}`} key={listing.id} className="option-row">
+                  <div>
+                    <strong>통합 {getOverallGrade(listing)} · 바이닐 {listing.grade} · 자켓 {listing.jacketGrade}</strong>
+                    <span>{listing.note} · 청음 {listing.listeningGrade}</span>
+                  </div>
+                  <b>{formatWon(listing.price)}</b>
+                  <ChevronRight size={18} />
+                </Link>
+              )) : <p className="panel-empty">검수 완료된 내부 재고가 아직 없어요.</p>}
             </div>
-            <div className="panel-heading market-reference-heading">
-              <h2>외부 최근 체결가 참고</h2>
-              <span>{vinyl.crawledAt} 수집</span>
-            </div>
-            <div className="option-list">
-              {vinyl.marketReferences.length > 0 ? vinyl.marketReferences.map((reference) => (
-                <a href={reference.url} target="_blank" rel="noreferrer" className="option-row" key={`${reference.source}-${reference.label}`}>
-                  <div><strong>{reference.source} · {reference.label}</strong><span>{reference.capturedAt} 공개 정보 기준</span></div>
-                  <b>{formatWon(reference.price)}</b>
-                  <ExternalLink size={17} />
-                </a>
-              )) : <p className="panel-empty">확인된 국내 공개 시세가 아직 없어요.</p>}
-            </div>
-            <p className="market-disclaimer">외부 체결가는 주로 미사용 상품 기준이며, 검수 재고 가격은 개봉 여부와 상태 등급을 반영한 데모 값입니다.</p>
+            <p className="market-disclaimer">중고 거래는 외부 판매처 연결 없이 VINYL FIND 내부 검수 재고로만 진행됩니다. 각 재고는 통합 등급과 부위별 등급을 따로 확인할 수 있습니다.</p>
           </div>
         ) : null}
 

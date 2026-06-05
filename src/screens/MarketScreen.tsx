@@ -13,9 +13,10 @@ import { VinylCard } from "../components/VinylCard";
 import {
   formatWon,
   getAlbumVersions,
+  getCheapestListing,
+  getInventoryVinyls,
+  getOverallGrade,
   getPublicListingPrice,
-  getReferencePrice,
-  vinyls,
 } from "../data/catalog";
 
 const modes = [
@@ -58,14 +59,12 @@ export function MarketScreen() {
   const [photoAdded, setPhotoAdded] = useState(false);
 
   const inventoryVinyls = useMemo(
-    () => vinyls
-      .filter((vinyl) => vinyl.usedListings.some((listing) => listing.sourceUrl))
-      .sort((a, b) => a.artist.localeCompare(b.artist, "ko") || a.title.localeCompare(b.title, "ko")),
+    () => getInventoryVinyls(),
     [],
   );
   const diggingVinyls = useMemo(
-    () => [...vinyls].sort((a, b) => a.artist.localeCompare(b.artist, "ko") || a.title.localeCompare(b.title, "ko")),
-    [],
+    () => inventoryVinyls,
+    [inventoryVinyls],
   );
   const marketSearchVinyls = useMemo(
     () => inventoryVinyls.filter((vinyl, index) =>
@@ -91,10 +90,8 @@ export function MarketScreen() {
     : marketSearchVinyls;
   const visibleDiggingVinyls = diggingVinyls.filter((vinyl) => matchesDiggingFilter(vinyl.artist, diggingFilter));
   const diggingVinyl = visibleDiggingVinyls.find((vinyl) => vinyl.id === selectedDiggingId);
-  const diggingListing =
-    diggingVinyl?.usedListings.find((listing) => listing.sourceUrl) ??
-    diggingVinyl?.usedListings[0];
-  const diggingPrice = diggingListing?.price ?? (diggingVinyl ? getReferencePrice(diggingVinyl).price : null);
+  const diggingListing = diggingVinyl ? getCheapestListing(diggingVinyl) : undefined;
+  const diggingPrice = diggingListing?.price ?? null;
 
   const changeMode = (mode: MarketMode) => {
     setActiveMode(mode);
@@ -106,7 +103,7 @@ export function MarketScreen() {
       <header className="screen-header">
         <p>SECONDHAND MARKET</p>
         <h1>중고 거래</h1>
-        <span>국내 중고 플랫폼의 국내·해외 LP 공개 매물을 찾고, 레코드 빈에서 꺼내보고, 내 LP를 판매해보세요.</span>
+        <span>VINYL FIND가 직접 검수한 내부 재고를 찾고, 레코드 빈에서 꺼내보고, 원하는 상태의 LP를 구매해보세요.</span>
       </header>
 
       <nav className="market-mode-tabs" aria-label="중고 거래 기능">
@@ -125,23 +122,27 @@ export function MarketScreen() {
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="앨범 또는 아티스트 검색" />
           </label>
           <div className="market-summary">
-            <span>{query ? `"${query}" 매물 검색 결과` : "국내·해외 LP 공개 매물 목업"}</span>
+            <span>{query ? `"${query}" 검수 재고 검색 결과` : "VINYL FIND 검수 완료 재고"}</span>
             <strong>{results.length}</strong>
           </div>
           <div className="market-results">
-            {results.map((vinyl) => (
-              <div className="market-result" key={vinyl.id}>
-                <VinylCard vinyl={vinyl} compact />
-                <div className="market-result-meta">
-                  <span>공개 매물 기반 목업 {vinyl.usedListings.filter((listing) => listing.sourceUrl).length}개</span>
-                  <strong>
-                    {vinyl.marketPrice
-                      ? `최근 공개 체결가 ${formatWon(vinyl.marketPrice)}`
-                      : `공개 매물 최저가 ${formatWon(getPublicListingPrice(vinyl))}`}
-                  </strong>
+            {results.map((vinyl) => {
+              const listing = getCheapestListing(vinyl);
+              return (
+                <div className="market-result" key={vinyl.id}>
+                  <VinylCard vinyl={vinyl} compact />
+                  <div className="market-result-meta">
+                    <span>검수 재고 {vinyl.usedListings.length}장 · 최저 통합 {listing ? getOverallGrade(listing) : "-"}</span>
+                    <strong>최저가 {formatWon(getPublicListingPrice(vinyl))}</strong>
+                  </div>
+                  {listing ? (
+                    <Link className="inventory-inline-link" to={`/inventory/${listing.id}`}>
+                      검수 재고 보기 <ArrowRight size={13} />
+                    </Link>
+                  ) : null}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ) : null}
@@ -190,7 +191,7 @@ export function MarketScreen() {
                 );
               })}
             </div>
-            <div className="crate-front"><span>VINYL FIND · BROWSE THE FULL CATALOG</span></div>
+            <div className="crate-front"><span>VINYL FIND · INSPECTED INVENTORY</span></div>
           </div>
           {diggingVinyl ? (
             <>
@@ -205,11 +206,11 @@ export function MarketScreen() {
                 {diggingListing ? (
                   <>
                     <div className="digging-grade">
+                      <div><span>통합</span><strong>{getOverallGrade(diggingListing)}</strong></div>
                       <div><span>바이닐</span><strong>{diggingListing.grade}</strong></div>
                       <div><span>자켓</span><strong>{diggingListing.jacketGrade}</strong></div>
-                      <div><span>청음</span><strong>{diggingListing.listeningGrade}</strong></div>
                     </div>
-                    <p className="digging-note">{diggingListing.note}</p>
+                    <p className="digging-note">{diggingListing.note} · 청음 {diggingListing.listeningGrade}</p>
                   </>
                 ) : (
                   <p className="digging-note">현재 등록된 중고 매물은 없어요. 상세 페이지에서 발매 정보와 판본을 확인해보세요.</p>
@@ -217,13 +218,11 @@ export function MarketScreen() {
                 <strong className="digging-price">{formatWon(diggingPrice)}</strong>
               </div>
               <div className="digging-actions">
-                {diggingListing?.sourceUrl ? (
-                  <a className="outline-button" href={diggingListing.sourceUrl} target="_blank" rel="noreferrer">
-                    {diggingListing.sourceLabel} 원문
-                  </a>
-                ) : <span className="digging-demo-label">카탈로그 LP</span>}
-                <Link className="primary-button" to={`/vinyl/${diggingVinyl.id}`}>
-                  상세 보기 <ArrowRight size={16} />
+                <Link className="outline-button" to={`/vinyl/${diggingVinyl.id}`}>
+                  앨범 정보
+                </Link>
+                <Link className="primary-button" to={`/inventory/${diggingListing?.id}`}>
+                  검수 재고 보기 <ArrowRight size={16} />
                 </Link>
               </div>
             </>

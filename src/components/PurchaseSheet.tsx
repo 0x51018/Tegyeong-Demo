@@ -19,9 +19,7 @@ const gradeScore: Record<Grade, number> = { M: 4, NM: 3, "VG+": 2, VG: 1 };
 
 const isSealed = (listing: UsedListing) => listing.note.includes("미개봉");
 
-const listingSource = (listing: UsedListing) => (
-  listing.sourceUrl ? `${listing.sourceLabel} 공개 매물` : listing.seller
-);
+const listingSource = (listing: UsedListing) => listing.seller;
 
 export function PurchaseSheet({ mode, vinyl, onClose }: PurchaseSheetProps) {
   const inventory = useMemo(

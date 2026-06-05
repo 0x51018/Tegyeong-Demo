@@ -18,7 +18,7 @@ const navItems = [
 
 export function AppShell({ children }: PropsWithChildren) {
   const location = useLocation();
-  const isDetail = location.pathname.startsWith("/vinyl/");
+  const isDetail = location.pathname.startsWith("/vinyl/") || location.pathname.startsWith("/inventory/");
 
   return (
     <div className="page-background">

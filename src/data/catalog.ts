@@ -112,20 +112,15 @@ const marketplaceListing = (
   jacketGrade: UsedListing["jacketGrade"],
   listeningGrade: UsedListing["listeningGrade"],
   note: string,
-  sourceLabel: string,
-  sourceUrl: string,
-  shipping: string,
 ): UsedListing => ({
   id,
   price,
   grade,
   jacketGrade,
   listeningGrade,
-  seller: `${sourceLabel} 공개 매물 기반 목업`,
+  seller: "VINYL FIND 검수 재고",
   note,
-  sourceLabel,
-  sourceUrl,
-  shipping,
+  shipping: "검수 완료 · 안전 포장 배송",
 });
 
 const crawledOverrides: Record<number, CrawledOverride> = {
@@ -139,9 +134,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "M",
         "M",
         "Parlophone 독일반 · 미개봉 · 구성품 전체 포함",
-        "중고나라",
-        "https://web.joongna.com/product/221926470",
-        "일반 택배 4,000원",
       ),
     ],
   },
@@ -155,9 +147,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "VG+",
         "VG+",
         "1987 일본반 · 속지와 속비닐 포함",
-        "중고나라",
-        "https://web.joongna.com/product/218519346",
-        "배송비 별도",
       ),
     ],
   },
@@ -171,9 +160,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "M",
         "M",
         "자켓·바이닐 민트급 · 구입 즉시 보호 필름 보관",
-        "중고나라",
-        "https://web.joongna.com/product/223163864",
-        "반값 택배 2,700원부터",
       ),
     ],
   },
@@ -187,9 +173,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "VG+",
         "VG+",
         "1979 미국 초반 · 초음파 세척 · B면 미세 스크래치 청음 완료",
-        "중고나라",
-        "https://web.joongna.com/product/228611395",
-        "일반 택배 4,000원",
       ),
     ],
   },
@@ -203,9 +186,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "NM",
         "M",
         "픽처 디스크 · 밀봉 포장은 아니지만 미개봉 새제품",
-        "중고나라",
-        "https://web.joongna.com/product/226161416",
-        "일반 택배 5,000원",
       ),
     ],
   },
@@ -219,9 +199,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "VG+",
         "VG",
         "1987 일본 초판 · 내지와 오리지널 이너슬리브 포함 · 알판 연흔",
-        "중고나라",
-        "https://web.joongna.com/product/204906533",
-        "우체국 택배 4,000원",
       ),
     ],
   },
@@ -235,9 +212,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "VG+",
         "VG+",
         "발매 당시 2LP · 게이트폴드 · 가사지 포함 · 장기 보관품",
-        "중고나라",
-        "https://web.joongna.com/product/207497983",
-        "무료배송 · 직거래 가능",
       ),
     ],
   },
@@ -251,9 +225,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "VG",
         "VG+",
         "라이선스반 · 자켓 빛바램과 가장자리 헤짐 · 재생 영향 없는 얼룩",
-        "중고나라",
-        "https://web.joongna.com/product/227501604",
-        "일반 택배 4,000원 · 직거래 가능",
       ),
     ],
   },
@@ -267,9 +238,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "M",
         "M",
         "30주년 판본 · 미개봉 · 보호 비닐 포함",
-        "중고나라",
-        "https://web.joongna.com/product/218492054",
-        "배송비 별도",
       ),
     ],
   },
@@ -283,9 +251,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "M",
         "M",
         "미개봉 LP · 구성품 상태는 공개 설명 기준",
-        "중고나라",
-        "https://web.joongna.com/product/226065324",
-        "반값 택배 2,700원부터 · 직거래 가능",
       ),
     ],
   },
@@ -326,9 +291,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "NM",
         "M",
         "미개봉 · 한정 블루 컬러 · 구성품 전체 포함",
-        "중고나라",
-        "https://web.joongna.com/product/221128372",
-        "일반 택배 5,000원",
       ),
       marketplaceListing(
         "joongna-wave-light-limited",
@@ -337,9 +299,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "NM",
         "M",
         "서울레코드페어 700매 한정 블루 컬러 · 미개봉",
-        "중고나라",
-        "https://web.joongna.com/product/221567936",
-        "무료배송",
       ),
     ],
   },
@@ -353,9 +312,6 @@ const crawledOverrides: Record<number, CrawledOverride> = {
         "NM",
         "M",
         "블랙 바이닐 미개봉 · LP 전용 포장",
-        "중고나라",
-        "https://web.joongna.com/product/225849616",
-        "반값 택배 2,500원부터",
       ),
     ],
   },
@@ -501,9 +457,6 @@ const coreVinyls: Vinyl[] = [
         "NM",
         "M",
         "미개봉 · 구성품 전체 포함",
-        "중고나라",
-        "https://web.joongna.com/product/184525599",
-        "무료배송",
       ),
       demoListing("thirsty-demo-01", 190000, "NM", "NM", "NM", "개봉 후 1회 청음 · 구성품 포함"),
     ],
@@ -567,9 +520,6 @@ const coreVinyls: Vinyl[] = [
         "VG",
         "NM",
         "개봉 · 청음 횟수 적음 · 커버 뒷면 오염",
-        "중고나라",
-        "https://web.joongna.com/product/179002101",
-        "무료배송 · 직거래 가능",
       ),
     ],
     marketReferences: [marketReference("최근 공개 체결가", 350000, "https://kream.co.kr/products/382214")],
@@ -633,9 +583,6 @@ const coreVinyls: Vinyl[] = [
         "M",
         "M",
         "미개봉 · 구성품 전체 포함 · 직거래 가능",
-        "중고나라",
-        "https://web.joongna.com/product/225650029",
-        "반값 택배 2,500원부터",
       ),
       demoListing("hyukoh-22-demo-01", 68000, "VG+", "VG+", "NM", "개봉 · 자켓 생활 흔적 · 재생 상태 양호"),
     ],
@@ -672,9 +619,6 @@ const coreVinyls: Vinyl[] = [
         "M",
         "M",
         "미개봉 새제품 · LP 전용 박스 포장",
-        "중고나라",
-        "https://web.joongna.com/product/225449676",
-        "일반 택배 5,000원 · 반값 택배 3,000원",
       ),
     ],
     marketReferences: [marketReference("최근 공개 체결가", 97000, "https://kream.co.kr/products/755262")],
@@ -936,9 +880,6 @@ const coreVinyls: Vinyl[] = [
         "VG+",
         "NM",
         "개봉 · 구성품 전체 포함 · 커버에 약간의 얼룩",
-        "중고나라",
-        "https://web.joongna.com/product/223761583",
-        "무료배송",
       ),
       demoListing("keung-black-demo-01", 170000, "NM", "VG+", "NM", "개봉 · 자켓 모서리 미세 눌림 · 재생 상태 양호"),
     ],
@@ -977,9 +918,6 @@ const coreVinyls: Vinyl[] = [
         "M",
         "M",
         "오렌지·레드 마블 한정반 · 미개봉 새제품",
-        "중고나라",
-        "https://web.joongna.com/product/182376340",
-        "일반 택배 4,000원",
       ),
       demoListing("keung-marbled-demo-01", 260000, "NM", "NM", "NM", "개봉 · 컬러 무늬 개체 차이 · 구성품 포함"),
     ],
@@ -1317,9 +1255,6 @@ const coreVinyls: Vinyl[] = [
         "M",
         "M",
         "미개봉 예약 상품 · 배송지 변경 방식",
-        "중고나라",
-        "https://web.joongna.com/product/227990129",
-        "무료배송",
       ),
     ],
     sourceLinks: [{
@@ -1465,10 +1400,34 @@ export const formatWon = (price: number | null | undefined) =>
   price === null || price === undefined ? "가격 정보 없음" : `${price.toLocaleString("ko-KR")}원`;
 
 export const getPublicListingPrice = (vinyl: Vinyl) => {
-  const publicPrices = vinyl.usedListings
-    .filter((listing) => listing.sourceUrl)
-    .map((listing) => listing.price);
-  return publicPrices.length > 0 ? Math.min(...publicPrices) : null;
+  const inventoryPrices = vinyl.usedListings.map((listing) => listing.price);
+  return inventoryPrices.length > 0 ? Math.min(...inventoryPrices) : null;
+};
+
+const gradeScore: Record<UsedListing["grade"], number> = { M: 4, NM: 3, "VG+": 2, VG: 1 };
+
+export const getOverallGrade = (listing: UsedListing): UsedListing["grade"] => {
+  const grades = [listing.grade, listing.jacketGrade, listing.listeningGrade];
+  return grades.reduce((lowest, grade) => (
+    gradeScore[grade] < gradeScore[lowest] ? grade : lowest
+  ), "M" as UsedListing["grade"]);
+};
+
+export const getInventoryVinyls = () =>
+  vinyls
+    .filter((vinyl) => vinyl.usedListings.length > 0)
+    .sort((a, b) => a.artist.localeCompare(b.artist, "ko") || a.title.localeCompare(b.title, "ko"));
+
+export const getCheapestListing = (vinyl: Vinyl) =>
+  [...vinyl.usedListings].sort((a, b) => a.price - b.price)[0];
+
+export const findInventoryListing = (listingId: string | undefined) => {
+  if (!listingId) return null;
+  for (const vinyl of vinyls) {
+    const listing = vinyl.usedListings.find((candidate) => candidate.id === listingId);
+    if (listing) return { vinyl, listing };
+  }
+  return null;
 };
 
 export const getReferencePrice = (vinyl: Vinyl) => {

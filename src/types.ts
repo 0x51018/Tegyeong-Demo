@@ -16,8 +16,6 @@ export interface UsedListing {
   price: number;
   seller: string;
   note: string;
-  sourceLabel?: string;
-  sourceUrl?: string;
   shipping?: string;
 }
 
