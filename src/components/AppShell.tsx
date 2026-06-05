@@ -5,7 +5,7 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
-import type { PropsWithChildren } from "react";
+import { useEffect, type PropsWithChildren } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 const navItems = [
@@ -19,6 +19,10 @@ const navItems = [
 export function AppShell({ children }: PropsWithChildren) {
   const location = useLocation();
   const isDetail = location.pathname.startsWith("/vinyl/") || location.pathname.startsWith("/inventory/");
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname, location.search]);
 
   return (
     <div className="page-background">
